@@ -1,7 +1,30 @@
-<h2>BIS 로그인</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">로그인</button>
-</form>
-<p>계정이 없으시면 관리자 페이지에서 만드시거나, 다음 단계에서 회원가입을 구현해볼까요?</p>
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold text-center mb-4">BIS에 로그인하기</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">아이디</label>
+                            <input type="text" name="username" class="form-control form-control-lg" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-muted small">비밀번호</label>
+                            <input type="password" name="password" class="form-control form-control-lg" required>
+                        </div>
+                        <button type="submit" class="btn btn-dark w-100 btn-lg rounded-pill fw-bold">로그인</button>
+                    </form>
+                    <div class="text-center mt-4">
+                        <p class="text-muted small">아직 마스터 계정이 없으신가요? <br> 관리자에게 문의하거나 <code>createsuperuser</code>를 실행하세요.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

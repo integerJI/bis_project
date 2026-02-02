@@ -1,8 +1,30 @@
-<h2>새로운 소식 전하기</h2>
-<form method="post">
-    {% csrf_token %}
-    <textarea name="content" placeholder="무슨 일이 일어나고 있나요?" rows="3" cols="40"></textarea>
-    <br>
-    <button type="submit">게시하기</button>
-</form>
-<a href="{% url 'post_list' %}">취소</a>
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="p-3 border-bottom">
+    <h5 class="fw-bold">새로운 소식 전하기</h5>
+</div>
+
+<div class="p-3">
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex">
+            <div class="flex-shrink-0">
+                <div class="rounded-circle bg-primary" style="width: 48px; height: 48px;"></div>
+            </div>
+            <div class="flex-grow-1 ms-3">
+                <textarea name="content" class="form-control border-0 fs-5" 
+                          placeholder="무슨 일이 일어나고 있나요?" rows="4" 
+                          style="resize: none; box-shadow: none;"></textarea>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="text-primary">
+                        <small>BIS Island Rules 적용 중 🏝️</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">게시하기</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
