@@ -1,0 +1,8 @@
+<h2>새로운 소식 전하기</h2>
+<form method="post">
+    {% csrf_token %}
+    <textarea name="content" placeholder="무슨 일이 일어나고 있나요?" rows="3" cols="40"></textarea>
+    <br>
+    <button type="submit">게시하기</button>
+</form>
+<a href="{% url 'post_list' %}">취소</a>

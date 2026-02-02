@@ -1,0 +1,7 @@
+<h2>BIS 로그인</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">로그인</button>
+</form>
+<p>계정이 없으시면 관리자 페이지에서 만드시거나, 다음 단계에서 회원가입을 구현해볼까요?</p>
