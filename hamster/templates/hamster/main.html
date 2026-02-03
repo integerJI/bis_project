@@ -1,0 +1,185 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<style>
+    /* 1. 케이지 기본 틀 */
+    .cage-wrapper {
+        perspective: 1000px;
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+
+    .cage-outer {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        background: #5d4037; 
+        border: 15px solid #3e2723;
+        border-radius: 30px;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        overflow: hidden;
+    }
+
+    .cage-inner {
+        position: relative;
+        height: 500px;
+        background: linear-gradient(to bottom, #fff9c4 0%, #fbc02d 100%);
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+    }
+
+    /* 2. 창살 (앞면) */
+    .cage-bars {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: repeating-linear-gradient(
+            to right,
+            rgba(0,0,0,0.1) 0px, /* 0.15에서 0.1로 낮춤 */
+            rgba(0,0,0,0.1) 2px,
+            transparent 2px,
+            transparent 40px
+        );
+        z-index: 20;
+        pointer-events: none;
+    }
+
+    /* 3. 톱밥 (바닥) */
+    .wood-shavings {
+        position: absolute;
+        bottom: 0; width: 100%; height: 120px;
+        background: #ffe0b2;
+        border-top: 5px solid #ffcc80;
+        z-index: 8; /* 햄스터(10~12)보다 아래로 내림 */
+        opacity: 1; /* 톱밥도 불투명하게 */
+    }
+
+    /* 4. [핵심] 순수 CSS 햄스터 모델 */
+    .hamster-container {
+        position: relative;
+        z-index: 10; /* 창살보단 아래, 톱밥보단 살짝 아래(파묻힌 느낌) */
+        bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: breathing 3s infinite ease-in-out;
+    }
+
+    /* 햄스터 몸체 - 투명도를 없애고 색상을 더 선명하게! */
+    .hamster-body {
+        position: relative;
+        width: 140px;
+        height: 120px;
+        background: #f3e5ab; /* 기존 색상 유지하되 투명도 없음 */
+        border-radius: 50% 50% 45% 45%;
+        box-shadow: 
+            inset -8px -8px 15px rgba(0,0,0,0.1), /* 입체감 그림자 */
+            5px 10px 20px rgba(0,0,0,0.1);      /* 바닥에 지는 그림자 */
+        z-index: 12; /* 톱밥보다 확실히 위로! */
+        opacity: 1 !important; /* 투명도 0% (완전 불투명) */
+    }
+
+    .ear {
+        position: absolute;
+        width: 35px; height: 35px;
+        background: #ffcdd2;
+        border: 4px solid #f3e5ab;
+        border-radius: 50%;
+        top: -10px;
+    }
+    .ear-l { left: 15px; }
+    .ear-r { right: 15px; }
+
+    .eye {
+        position: absolute;
+        width: 12px; height: 12px;
+        background: #333;
+        border-radius: 50%;
+        top: 45px;
+        animation: blink 4s infinite;
+    }
+    .eye-l { left: 35px; }
+    .eye-r { right: 35px; }
+
+    .nose {
+        position: absolute;
+        width: 10px; height: 8px;
+        background: #ffab91;
+        border-radius: 50%;
+        top: 60px; left: 65px;
+    }
+
+    .cheek {
+        position: absolute;
+        width: 40px; height: 30px;
+        background: #ff8a80;
+        opacity: 0.2;
+        border-radius: 50%;
+        top: 65px;
+    }
+    .cheek-l { left: 15px; }
+    .cheek-r { right: 15px; }
+
+    /* 5. 애니메이션 정의 */
+    @keyframes breathing {
+        0%, 100% { transform: scale(1) translateY(0); }
+        50% { transform: scale(1.03) translateY(-5px); }
+    }
+
+    @keyframes blink {
+        0%, 90%, 100% { transform: scaleY(1); }
+        95% { transform: scaleY(0.1); }
+    }
+
+    /* 6. 상태 UI 패널 */
+    .status-panel {
+        position: absolute;
+        top: 20px; left: 20px;
+        z-index: 30;
+        background: rgba(255,255,255,0.9);
+        padding: 15px;
+        border-radius: 20px;
+        width: 200px;
+        border: 2px solid #f39c12;
+    }
+</style>
+
+<div class="cage-wrapper">
+    <div class="cage-outer">
+        <div class="status-panel shadow-sm">
+            <h5 class="fw-bold mb-1">🐹 {{ hamster.name }}</h5>
+            <div class="small text-muted mb-2">Lv.{{ hamster.level }} 햄찌</div>
+            
+            <div class="progress mb-2" style="height: 8px;">
+                <div class="progress-bar bg-danger" style="width: {{ hamster.hunger }}%"></div>
+            </div>
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-warning" style="width: {{ hamster.happiness }}%"></div>
+            </div>
+        </div>
+
+        <div class="cage-inner">
+            <div class="cage-bars"></div> <div class="hamster-container">
+                <div class="hamster-body">
+                    <div class="ear ear-l"></div>
+                    <div class="ear ear-r"></div>
+                    <div class="eye eye-l"></div>
+                    <div class="eye eye-r"></div>
+                    <div class="nose"></div>
+                    <div class="cheek cheek-l"></div>
+                    <div class="cheek cheek-r"></div>
+                </div>
+            </div>
+
+            <div class="wood-shavings"></div> </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <div class="d-flex justify-content-center gap-3">
+            <button class="btn btn-warning btn-lg rounded-pill px-5 shadow fw-bold">🌻 해바라기씨</button>
+            <button class="btn btn-info btn-lg rounded-pill px-5 shadow text-white fw-bold">🎡 쳇바퀴</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
