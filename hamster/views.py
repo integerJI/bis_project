@@ -51,3 +51,29 @@ def hamster_main(request):
         return redirect('hamster:index')
         
     return render(request, 'hamster/main.html', {'hamster': hamster})
+
+
+@login_required
+def feed_hamster(request):
+    if request.method == 'POST':
+        hamster = Hamster.objects.get(owner=request.user)
+        hamster.hunger = min(hamster.hunger + 15, 100) # 포만감 +15
+        hamster.happiness = min(hamster.happiness + 5, 100) # 행복도 +5
+        hamster.save()
+    return redirect('hamster:main')
+
+@login_required
+def play_hamster(request):
+    if request.method == 'POST':
+        hamster = Hamster.objects.get(owner=request.user)
+        hamster.exp += 20 # 경험치 +20
+        hamster.happiness = min(hamster.happiness + 10, 100)
+        hamster.hunger = max(hamster.hunger - 10, 0) # 운동하면 배고파짐
+        
+        # 레벨업 로직 (경험치 100마다 레벨업)
+        if hamster.exp >= 100:
+            hamster.level += 1
+            hamster.exp = 0
+            
+        hamster.save()
+    return redirect('hamster:main')
